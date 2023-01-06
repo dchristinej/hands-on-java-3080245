@@ -13,7 +13,7 @@ public class Authenticator {
       customer.setAuthenticated(true);
       return customer;
     } else {
-      throw new LoginException("Incorrect Password")
+      throw new LoginException("Incorrect Password");
     }
   }
 

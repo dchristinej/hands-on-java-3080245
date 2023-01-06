@@ -4,9 +4,11 @@ import java.util.Scanner;
 
 import javax.security.auth.login.LoginException;
 
+import bank.exceptions.AmountException;
+
 public class Menu {
   private Scanner scanner;
-  
+
   public static void main(String[] args) {
     System.out.println("Welcome to Banking International");
 
@@ -15,13 +17,13 @@ public class Menu {
     Customer customer = menu.authenticateUser();
 
     if (customer != null) {
-      Account account = DataSource.getAccount(customer.getAccountId());
+      Accounts account = DataSource.getAccount(customer.getAccountId());
       menu.showMenu(customer, account);
-    }
-
+    };
 
     menu.scanner.close();
   }
+
   private Customer authenticateUser() {
     System.out.println("Please enter your username");
     String username = scanner.next();
@@ -30,7 +32,7 @@ public class Menu {
     String password = scanner.next();
 
     Customer customer = null;
-    try{
+    try {
       customer = Authenticator.login(username, password);
     } catch (LoginException e) {
       System.out.println("There is an error" + e.getMessage());
@@ -57,7 +59,12 @@ public class Menu {
         case 1:
         System.out.println("How much do you want to deposit");
         amount = scanner.nextDouble();
-        account.deposit(amount);
+        try {
+          account.deposit(amount);
+        } catch (AmountException e) {
+          System.out.println(e.getMessage());
+          System.out.println("Please Try again");
+        }
         break;
 
         case 2:
@@ -73,7 +80,7 @@ public class Menu {
         case 4:
         Authenticator.logout(customer);
         System.out.println("Thank you for banking with us.");
-        break
+        break;
 
         default: 
         System.out.println("Invalid option. Please try again.");
